@@ -21,7 +21,6 @@ class TestBooksCollector:
         assert len(collector.get_books_genre()) == 1
 
     # Проверка граничных значений в названии книг
-
     @pytest.mark.parametrize('name,count',
                              [('', 0),
                               ('К', 1),
