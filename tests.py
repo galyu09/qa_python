@@ -17,22 +17,25 @@ class TestBooksCollector:
 
     def test_add_new_book_doubble_adding_returns_once(self, collector):
         collector.add_new_book('Книга')
-        collector.add_new_book('Книга')
+        collector.add_new_book('Книга') # проверяем, что дважды одна и та же книга не добавится
         assert len(collector.get_books_genre()) == 1
 
-    # Проверка на граничные значения в названии
+    # Проверка граничных значений в названии книг
 
-    @pytest.mark.parametrize('name',
-                             ['', 'КнигаКнигаКнигаКнигаКнигаКнигаКнигаКнига1']
-                             )
-    def test_add_new_book_add_incorrect_name_not_added(self, name, collector):
+    @pytest.mark.parametrize('name,count',
+                             [('', 0),
+                              ('К', 1),
+                              ('КнигаКнигаКнигаКнигаКнигаКнигаКнигаКнига1', 0),
+                              ('КнигаКнигаКнигаКнигаКнигаКнигаКнигаКнига', 1),
+                              ('Книга', 1)])
+    def test_add_new_book(self, name, count, collector):
         collector.add_new_book(name)
-        assert len(collector.get_books_genre()) == 0
+        assert len(collector.get_books_genre()) == count
 
-    # Проверяем, что книга добавлляется с пустым жанром
     def test_add_new_book_returns_empty_genre_list(self, collector):
         collector.add_new_book('Белый клык')
         assert '' in collector.get_book_genre('Белый клык')
+        # assert len(collector.get_books_genre()) == 1
 
     def test_update_book_genre(self, book_list):
         book_list.set_book_genre('Незнайка', 'Ужасы')
@@ -62,5 +65,4 @@ class TestBooksCollector:
         book_list.add_book_in_favorites('Гарри Поттер')
         book_list.delete_book_from_favorites('Гарри Поттер')
         book_list.delete_book_from_favorites('Гарри Поттер')  # проверяем, что повторно удалить из списка избранных нельзя
-        # assert 'Гарри Поттер' not in book_list.get_list_of_favorites_books()
-        assert len(book_list.get_list_of_favorites_books()) == 0
+        assert 'Гарри Поттер' not in book_list.get_list_of_favorites_books() and len(book_list.get_list_of_favorites_books()) == 0
